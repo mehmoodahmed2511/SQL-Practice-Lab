@@ -1,0 +1,1 @@
+A collection of real-world SQL Server challenges and hands-on exercises using structured business datasets. Covers SQL fundamentals, joins, aggregations, subqueries, CTEs, window functions, database development, stored procedures, indexing, and query optimization.
