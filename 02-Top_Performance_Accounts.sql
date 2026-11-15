@@ -6,11 +6,14 @@
 WITH high_transactions AS (
 SELECT 
 a.AccountID,
+a.AccountNumber,
 a.AccountType,
 b.BranchName,
+COUNT(DISTINCT t.TransactionID) AS TotalTransactions,
 c.FirstName + ' ' + c.LastName AS CustomerName,
 ROUND(SUM(t.Amount), 2) AS TransactionsAmount,
-ROW_NUMBER() OVER (PARTITION BY a.AccountType ORDER BY ROUND(SUM(t.Amount), 2) DESC) AS rn
-FROM Sales.Customers c JOIN Finance.Accounts a ON c.CustomerID=a.CustomerID JOIN Finance.Transactions t ON a.AccountID=t.AccountID JOIN dbo.Branches b ON t.BranchID=b.BranchID WHERE t.TransactionDate BETWEEN '2025-01-01' AND '2025-12-31' AND TransactionStatus='SUCCESS' GROUP BY a.AccountID, a.AccountType, b.BranchName, c.FirstName + ' ' + c.LastName)
+RANK() OVER (PARTITION BY a.AccountType ORDER BY ROUND(SUM(t.Amount), 2) DESC, a.AccountID) AS AccountRank
+FROM Sales.Customers c JOIN Finance.Accounts a ON c.CustomerID=a.CustomerID JOIN Finance.Transactions t ON a.AccountID=t.AccountID JOIN dbo.Branches b ON t.BranchID=b.BranchID WHERE t.TransactionDate >= '20250101' AND t.TransactionDate < '20260101' AND TransactionStatus='SUCCESS' GROUP BY a.AccountID, a.AccountNumber, a.AccountType, b.BranchName, c.FirstName + ' ' + c.LastName)
 
-SELECT AccountID, AccountType, CustomerName, BranchName, TransactionsAmount FROM high_transactions WHERE rn<=3 ORDER BY AccountType, TransactionsAmount DESC;
+SELECT AccountID, AccountNumber, AccountType, AccountRank, TotalTransactions, CustomerName, BranchName, TransactionsAmount FROM high_transactions WHERE AccountRank<=3 ORDER BY AccountType, TransactionsAmount DESC;
+
