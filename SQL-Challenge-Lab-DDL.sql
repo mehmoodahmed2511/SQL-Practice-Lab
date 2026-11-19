@@ -693,3 +693,29 @@ WHERE o.OrderID IS NULL;
 
 PRINT 'SQLPracticeLab setup and seed data completed.';
 GO
+
+
+CREATE TABLE dbo.SQLChallenge04_ServiceTickets
+(
+    TicketID INT PRIMARY KEY,
+    CustomerID INT NOT NULL,
+    CreatedAt DATE NOT NULL,
+    DueDate DATE NOT NULL,
+    Status VARCHAR(20) NOT NULL
+        CHECK (Status IN
+        ('Open', 'In Progress', 'Escalated', 'Closed')),
+    Priority VARCHAR(10) NOT NULL
+        CHECK (Priority IN
+        ('Low', 'Medium', 'High', 'Critical')),
+    LastUpdated DATETIME2 NULL
+);
+
+INSERT INTO dbo.SQLChallenge04_ServiceTickets
+VALUES
+(1001, 101, '2026-11-10', '2026-11-14', 'Open', 'High', NULL),
+(1002, 102, '2026-11-13', '2026-11-18', 'Open', 'Critical', NULL),
+(1003, 103, '2026-11-09', '2026-11-12', 'Open', 'Low', NULL),
+(1004, 104, '2026-11-08', '2026-11-12', 'In Progress', 'High', NULL),
+(1005, 105, '2026-11-12', '2026-11-15', 'Open', 'Critical', NULL),
+(1006, 106, '2026-11-07', '2026-11-11', 'Closed', 'High', NULL),
+(1007, 107, '2026-11-15', '2026-11-16', 'Open', 'Medium', NULL);

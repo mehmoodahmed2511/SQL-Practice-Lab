@@ -1,4 +1,15 @@
 
+-- VARIABLE DECLARATION
+-- BEGIN TRY
+-- BEGIN TRANASCTION
+-- UPDATE/INSERT/DELETE (you can also store OUTPUT changes in temporary table defined in the variable)
+-- @ROWCOUNT (Number of rows updated/affected)
+-- IF (condition) -> COMMIT ELSE -> ROLEBACK
+-- Show OUTPUT (temporary table variable)
+-- END TRY
+-- BEGIN CATCH ( ROLLBACK TRANSACTION and show error)
+-- END CATCH
+
 DECLARE @RowsAffected INT;
 DECLARE @UpdatedTickets TABLE
 (
@@ -6,21 +17,16 @@ DECLARE @UpdatedTickets TABLE
     PreviousStatus VARCHAR(20),
     NewStatus VARCHAR(20)
 );
-
 BEGIN TRY
-
     BEGIN TRANSACTION;
-
     UPDATE dbo.SQLChallenge04_ServiceTickets
     SET
         Status = 'Escalated',
         LastUpdated = '2026-11-16 18:00:00'
-
     OUTPUT
         deleted.TicketID,
         deleted.Status,
         inserted.Status
-
     INTO @UpdatedTickets
     (
         TicketID,
@@ -37,36 +43,26 @@ BEGIN TRY
 
     IF @RowsAffected = 2
     BEGIN
-
         COMMIT TRANSACTION;
-
         SELECT
             TicketID,
             PreviousStatus,
             NewStatus
         FROM @UpdatedTickets;
-
         PRINT 'Transaction committed successfully.';
-
     END
+
     ELSE
     BEGIN
-
         ROLLBACK TRANSACTION;
-
         PRINT 'Transaction rolled back. Unexpected row count.';
-
     END;
-
 END TRY
 
 BEGIN CATCH
-
     IF XACT_STATE() <> 0
         ROLLBACK TRANSACTION;
-
     PRINT ERROR_MESSAGE();
-
 END CATCH;
 
 

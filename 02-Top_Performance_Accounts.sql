@@ -1,3 +1,4 @@
+-- SQL Challenge #02 — Top Performing Accounts
 -- Business scenario: 
 -- A bank wants to identify its most active accounts during 2025. Management wants to see the top three accounts within each account type based on their successful transaction amounts. For example, the bank wants to know which three Savings accounts generated the highest transaction amounts, which three Current accounts performed best, and so on.
 
