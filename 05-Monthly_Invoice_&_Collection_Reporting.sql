@@ -43,4 +43,4 @@ VALUES
 (5006, 104, '2026-01-25', 1200, 'Paid'),
 (5007, 104, '2026-02-05', 400, 'Pending');
 
-
+-- Below is the stored procedure
