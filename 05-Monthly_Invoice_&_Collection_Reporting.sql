@@ -44,3 +44,71 @@ VALUES
 (5007, 104, '2026-02-05', 400, 'Pending');
 
 -- Below is the stored procedure
+CREATE PROCEDURE MonthlyInvoiceAndCollectionReporting
+@StartDate DATE,
+@EndDate DATE,
+@CustomerID INT = NULL
+
+AS
+BEGIN
+
+SET NOCOUNT ON;
+
+IF @StartDate > @EndDate
+BEGIN
+THROW 50001, 'Start Date cannot be greater than the End Date.', 1;
+END;
+
+SELECT 
+c.CustomerID, 
+c.CustomerName,
+
+COUNT(i.InvoiceID) AS TotalInvoices,
+
+SUM(
+CASE
+WHEN i.InvoiceStatus = 'Paid' THEN 1
+ELSE 0
+END
+) AS PaidInvoices,
+
+SUM(
+CASE
+WHEN i.InvoiceStatus = 'Paid'
+THEN i.Amount
+ELSE 0
+END
+) AS CollectedAmount,
+
+SUM(i.Amount) AS TotalBilled,
+
+SUM(
+CASE
+WHEN i.InvoiceStatus <> 'Paid'
+THEN i.Amount
+ELSE 0
+END
+) AS OutstandingAmount
+
+FROM dbo.SQLChallenge05_Customers c INNER JOIN dbo.SQLChallenge05_Invoices i ON c.CustomerID = i.CustomerID 
+WHERE i.InvoiceDate BETWEEN @StartDate AND @EndDate AND (@CustomerID IS NULL OR c.CustomerID = @CustomerID)
+GROUP BY c.CustomerID, c.CustomerName ORDER BY c.CustomerID;
+
+END;
+
+-- Executing Procedure
+
+EXEC MonthlyInvoiceAndCollectionReporting 
+@StartDate = '2026-01-01',
+@EndDate = '2026-12-31';
+
+
+
+
+
+
+
+
+
+
+
