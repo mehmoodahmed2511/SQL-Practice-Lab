@@ -100,7 +100,8 @@ END;
 
 EXEC MonthlyInvoiceAndCollectionReporting 
 @StartDate = '2026-01-01',
-@EndDate = '2026-12-31';
+@EndDate = '2026-12-31',
+@CustomerID = 101;
 
 
 
