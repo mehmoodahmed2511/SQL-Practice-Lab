@@ -31,4 +31,15 @@ A company wants to monitor its monthly expenses across its departments. The fina
 view that displays approved expenses, total claims, and average claim amounts for each department, month by month.
 Instead of writing the same aggregation query repeatedly, you need to create a database view. */
 
-SELECT * FROM Sales.Payments;
+CREATE OR ALTER VIEW vw_DepartmentExpenseReportingSystem AS
+SELECT 
+d.DepartmentName,
+DATENAME(MONTH, e.ExpenseDate) AS Month,
+DATENAME(YEAR, e.ExpenseDate) AS Year,
+COUNT(DISTINCT e.ClaimID) AS Total_Claims,
+COUNT(e.Status) AS ApprovedExpenses,
+AVG(e.ClaimAmount) AS Avg_Claim_Amount
+FROM Finance.ExpenseClaims e LEFT JOIN HR.Departments d ON e.DepartmentID = d.DepartmentID
+GROUP BY d.DepartmentID, d.DepartmentName, DATENAME(MONTH, e.ExpenseDate), DATENAME(YEAR, e.ExpenseDate);
+
+SELECT * FROM vw_DepartmentExpenseReportingSystem ORDER BY Month DESC;
