@@ -26,6 +26,6 @@ END;
 SELECT e.FirstName + ' ' + e.LastName AS Employee_Name,
 d.DepartmentName,
 e.JobTitle,
-e.Salary * @IncrementPercent / 100
+e.Salary * @IncrementPercent / 100 * 100
 
 
