@@ -106,3 +106,4 @@ ORDER BY EmployeeID ASC;
 END;
 
 EXEC DepartmentSalaryIncrementSystem Sales, 2, 10;
+EXEC DepartmentSalaryIncrementSystem 'Information Technology', 2, 5;
