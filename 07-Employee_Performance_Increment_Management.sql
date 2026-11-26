@@ -53,15 +53,15 @@ SELECT e.EmployeeName, e.Salary, d.DepartmentName FROM dbo.Employees e INNER JOI
 SELECT * FROM dbo.Employees;
 
 CREATE OR ALTER PROCEDURE DepartmentSalaryIncrementSystem
-@DepartmentName VARCHAR,
-@MinimumRating INT(2),
-@IncrementPercent FLOAT(5, 2)
+@DepartmentName VARCHAR(100),
+@MinimumRating INT,
+@IncrementPercent DECIMAL(5, 2)
 
 AS BEGIN
 
 SET NOCOUNT ON;
 
-IF @Department IS NULL OR LTRIM(RTRIM(@DepartmentName) = ''
+IF @DepartmentName IS NULL OR LTRIM(RTRIM(@DepartmentName)) = ''
 BEGIN
 THROW 50001, 'Department name cannot be null', 1;
 END;
@@ -75,3 +75,34 @@ IF @IncrementPercent IS NULL OR @IncrementPercent <= 0 OR @IncrementPercent > 20
 BEGIN
 THROW 50003, 'Increment Percentage should be between 1 and 20', 1;
 END;
+
+DECLARE @UpdatedEmployees TABLE(
+EmployeeID INT,
+EmployeeName VARCHAR (100),
+OldSalary DECIMAL (10, 2),
+NewSalary DECIMAL (10, 2)
+);
+
+UPDATE e
+
+SET e.Salary = e.Salary * (1 + @IncrementPercent / 100),
+e.IncrementApplied = 1
+
+OUTPUT
+INSERTED.EmployeeID,
+INSERTED.EmployeeName,
+DELETED.Salary,
+INSERTED.Salary
+
+INTO @UpdatedEmployees 
+
+FROM dbo.Employees AS e INNER JOIN HR.Departments d ON e.DepartmentID = d.DepartmentID
+
+WHERE d.DepartmentName = @DepartmentName AND e.PerformanceRating >= @MinimumRating AND IsActive = 1 AND IncrementApplied = 0
+
+SELECT EmployeeID, EmployeeName, OldSalary, NewSalary FROM @UpdatedEmployees
+ORDER BY EmployeeID ASC;
+
+END;
+
+EXEC DepartmentSalaryIncrementSystem Sales, 2, 10;
