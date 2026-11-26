@@ -1,3 +1,15 @@
+/* SQLPracticeLab – Challenge 7
+Employee Performance Increment Management
+
+1. Business scenario
+An organization wants to automate annual salary increments based on employee performance.
+
+The HR department needs a stored procedure that:
+- Selects eligible employees based on department and performance rating.
+- Applies a salary increment.
+- Prevents the same employee from receiving the increment twice.
+- Returns the old and updated salary for every affected employee.*/
+
 CREATE TABLE dbo.Employees
 (
     EmployeeID INT PRIMARY KEY,
@@ -35,18 +47,6 @@ VALUES
 (3, 'Hina', 6, 90000, 5, 1, 0),
 (4, 'Kamran', 1, 50000, 3, 1, 0),
 (5, 'Zoya', 1, 70000, 5, 0, 0);
-
-/* SQLPracticeLab – Challenge 7
-Employee Performance Increment Management
-
-1. Business scenario
-An organization wants to automate annual salary increments based on employee performance.
-
-The HR department needs a stored procedure that:
-- Selects eligible employees based on department and performance rating.
-- Applies a salary increment.
-- Prevents the same employee from receiving the increment twice.
-- Returns the old and updated salary for every affected employee.*/
 
 
 SELECT e.EmployeeName, e.Salary, d.DepartmentName FROM dbo.Employees e INNER JOIN HR.Departments d ON e.DepartmentID = d.DepartmentID;
